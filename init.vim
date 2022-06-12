@@ -7,8 +7,6 @@ call plug#begin('~/.config/nvim/plugged')
 	Plug 'preservim/nerdtree'	
 	" Solidity
 	Plug 'tomlion/vim-solidity'
-    " JavaScript
-    Plug 'pangloss/vim-javascript'
     " Python
     Plug 'vim-python/python-syntax'
     " Golang
@@ -93,6 +91,9 @@ let g:user_emmet_leader_key=','
 "Python syntax
 let g:python_highlight_all = 1
 
+" JavaScript syntax
+let g:javascript_plugin_jsdoc = 1
+
 "Mkdp
 " set to 1, nvim will open the preview window after entering the markdown buffer
 " default: 0
@@ -125,6 +126,10 @@ set signcolumn=yes
 set encoding=utf-8
 
 
+" Use ; to auto pair (),{} and []
+inoremap (; (<CR>)<C-c>O
+inoremap {; {<CR>}<C-c>O
+inoremap [; [<CR>]<C-c>O
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
@@ -138,4 +143,18 @@ function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
